@@ -16,6 +16,7 @@ class ProductsRepository implements IProductsRepository {
     this.ormRepository = getRepository(Product);
   }
 
+
   public async create({
     name,
     price,
@@ -26,22 +27,51 @@ class ProductsRepository implements IProductsRepository {
     return product;
   }
 
+
   public async findByName(name: string): Promise<Product | undefined> {
-    const findProduct = await this.ormRepository.findOne({
+    const product = await this.ormRepository.findOne({
       where: { name },
     })
-
-    return findProduct;
+    return product;
   }
+
 
   public async findAllById(products: IFindProducts[]): Promise<Product[]> {
-    // TODO
+    const productIDs = products.map(product => product.id);
+
+    const productsDetails = await this.ormRepository.find({
+      where: {
+        id: In(productIDs),
+      }
+    });
+
+    // console.log({ productsDetails });
+
+    return productsDetails;
   }
+
 
   public async updateQuantity(
     products: IUpdateProductsQuantityDTO[],
   ): Promise<Product[]> {
-    // TODO
+    // const productIDs = products.map(product => product.id);
+
+    // const productsDetails = await this.ormRepository.find({
+    //   where: {
+    //     id: In(productIDs),
+    //   }
+    // });
+
+    // productsDetails.map(productDetails => {
+    //   products.forEach(product => {
+    //     if (productDetails.id === product.id) {
+    //       productDetails.quantity += product.quantity
+    //     }
+    //   }
+    //   )
+    // });
+
+    return this.ormRepository.save(products);
   }
 }
 
