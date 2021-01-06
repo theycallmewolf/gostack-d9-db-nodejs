@@ -17,21 +17,23 @@ class OrdersProducts {
   id: string;
 
   @ManyToOne(() => Order, order => order.order_products)
+  @JoinColumn({ name: 'order_id' })
   order: Order;
 
+  @Column()
+  order_id: string;
+
   @ManyToOne(() => Product, product => product.order_products)
+  @JoinColumn({ name: 'product_id' })
   product: Product;
 
   @Column()
   product_id: string;
 
-  @Column()
-  order_id: string;
-
-  @Column()
+  @Column({ type: 'decimal', precision: 6, scale: 2 })
   price: number;
 
-  @Column({ type: 'decimal', precision: 6, scale: 2 })
+  @Column('int')
   quantity: number;
 
   @CreateDateColumn()
